@@ -13,6 +13,15 @@
 void semSIGNAL (int num_sem, int semID);
 
 int main (int argc, char *argv[]){
+    
+    if (argv[1] == NULL || argv[2] == NULL){
+        printf("Debes ingresar como minimo mas de dos argumentos!!!\n");
+        exit(EXIT_FAILURE);
+    } else if (argc > 5){
+        printf("Debes ingresar como maximo 4 argumentos!!!\n");
+        exit(EXIT_FAILURE);
+    }
+
     int semid = semget(IPC_PRIVATE, CANT_SEMAFOROS, IPC_CREAT | 0600);
 
     if (semid < 0)
