@@ -28,7 +28,7 @@ int main (int argc, char *argv[]){
     int choferes = atoi(argv[2]);
 
     printf(" Velocidad: %d \n Choferes: %d", velocidad, choferes);
-    fflush(stdout);
+    fflush(stdout); //comentario random
     
     if (velocidad < 0 ){
         perror("Debes introducir un valor mayor o igual a 0 como primer parametro!!");
