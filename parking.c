@@ -10,7 +10,9 @@
 #define CANT_SEMAFOROS 10
 #define TAM 1024
 
+void ctrlC();
 void semSIGNAL (int num_sem, int semID);
+void funcAparcamiento (int longitudCoche, int a );
 
 int main (int argc, char *argv[]){
     
@@ -22,6 +24,21 @@ int main (int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
+    int velocidad = atoi(argv[1]);
+    int choferes = atoi(argv[2]);
+
+    printf(" Velocidad: %d \n Choferes: %d", velocidad, choferes);
+    fflush(stdout);
+    
+    if (velocidad < 0 ){
+        perror("Debes introducir un valor mayor o igual a 0 como primer parametro!!");
+        exit(EXIT_FAILURE);
+    } else if (choferes <= 0){
+        perror("Debes introducir una cantidad de choferes mayor que 0 en el segundo parametro!!");
+        exit(EXIT_FAILURE);
+    }
+
+    // CREACION SEMAFORO
     int semid = semget(IPC_PRIVATE, CANT_SEMAFOROS, IPC_CREAT | 0600);
 
     if (semid < 0)
@@ -35,6 +52,7 @@ int main (int argc, char *argv[]){
 		exit(EXIT_FAILURE);
 	}
 
+    // MEMORIA COMPARTIDA
     char *punteroAMemoriaCompartida = NULL;
     int shmid = shmget(IPC_PRIVATE, TAM, IPC_CREAT | 0600);
 
@@ -43,6 +61,9 @@ int main (int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
+
+    /*PARKING_aparcar();
+    PARKING_desaparcar();*/
     printf("Código ejecutado exitosamente !!!\n");
     fflush(stdout);
     return 0;
