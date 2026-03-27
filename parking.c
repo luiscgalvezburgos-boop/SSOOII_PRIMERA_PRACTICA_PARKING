@@ -6,8 +6,10 @@
 #include <sys/sem.h>
 #include <sys/types.h>
 #include <sys/shm.h>
+#include <sys/msg.h>
 #include <signal.h>
 #include <errno.h>
+#include <string.h>
 
 #define CANT_SEMAFOROS 79
 #define TAM 1024
@@ -17,12 +19,14 @@ struct mensaje {
     char texto[100];
 };
 
-void mensaje_sigint(int i );
+
+void mensaje_sigint();
+int funciOn_llegada(HCoche hc); 
 void semSIGNAL (int num_sem, int semID);
 void funcAparcamiento (int longitudCoche, int a );
-
 // Fucntioned
-int funciOn_llegada(HCoche hc); 
+
+void modoEjecucion (char *arg3, char *arg4);
 
 int main (int argc, char *argv[]){
     
@@ -48,8 +52,20 @@ int main (int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
+    if (strcmp(argv[3], "PA") != 0 && strcmp(argv[3], "PD") != 0){
+        perror("El argumento permitido solo puede ser PA o PD.");
+        exit(EXIT_FAILURE);
+    } else if (strcmp(argv[3], "PA") == 0 && strcmp(argv[4], "PD") == 0){
+        perror("Introduce una combinacion de argumentos valida.");
+        exit(EXIT_FAILURE);
+    }
+
+    //creacion de la señal que vamos a modificar.
+
     /*struct sigaction ss;
-    ss.sa_handler = mensaje_sigint;*/
+    ss.sa_handler = mensaje_sigint();
+    sigaction(SIGINT, )*/
+
 
 
     // CREACION SEMAFORO
@@ -81,18 +97,47 @@ int main (int argc, char *argv[]){
     int shmid = shmget(IPC_PRIVATE, TAM, IPC_CREAT | 0600);
 
     if (shmid < 0){
-        perror("Error en el fork().");
+        perror("Error en la creacion de la zona de memoria compartida.");
         exit(EXIT_FAILURE);
     }
 
-    PARKING_INICIO(velocidad, choferes, semid, msgid, shmid);
+    /*PARKING_INICIO(velocidad, choferes, semid, msgid, shmid);
+    if (PARKING_INICIO(velocidad, choferes, semid, msgid, shmid) < 0){
+        perror("Error en la ejecucion de PARKING_InICIO");
+        exit(EXIT_FAILURE);
+    }
+    */
     /*PARKING_aparcar();
     PARKING_desaparcar();*/
+
+    //int hola = funciOn_llegada();
     printf("Código ejecutado exitosamente !!!\n");
     fflush(stdout);
     return 0;
+
+
 }
 
 void mensaje_Sigint(int i){
     //codigo :)
+}
+
+void modoEjecucion (char *arg3, char *arg4){
+
+    if (strcmp(arg3, "PA") == 0){
+        printf("Daremos prioridad a los coches que se van a aparcar. \n");
+    }
+
+    if (strcmp(arg3, "PD") == 0){
+        printf("Daremos prioridad a los coches que se van a desaparcar. \n");
+    }
+    /*witch(arg3){
+        case 'PA':
+            printf("Daremos prioridad a los coches que se van a aparcar. \n");
+            break;
+        case 'PD':
+            printf("Daremos prioridad a los coches que se van a desaparcaar \n");
+            fflush(stdout);
+            break;
+    }*/
 }
